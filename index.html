@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五节课 | The Fifth Period - 班级黑市</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #050505;
+            color: #ddd;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(90, 0, 0, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 85% 85%, rgba(0, 60, 0, 0.1) 0%, transparent 25%);
+            overflow-x: hidden;
+        }
+        
+        /* 警告遮罩 */
+        #warningOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .warning-box {
+            background-color: #111;
+            border: 3px solid #8b0000;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .warning-box::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 1px solid #8b0000;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        .warning-icon {
+            font-size: 4rem;
+            color: #8b0000;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px #8b0000; }
+            50% { text-shadow: 0 0 20px #ff0000, 0 0 30px #8b0000; }
+            100% { text-shadow: 0 0 5px #8b0000; }
+        }
+        
+        .warning-title {
+            font-size: 2.5rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .warning-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+        
+        .warning-btn {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .warning-btn:hover {
+            background-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 头部样式 */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .skull-icon {
+            font-size: 2.8rem;
+            color: #8b0000;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.7);
+        }
+        
+        .site-title {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .title-en {
+            color: #8b0000;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .title-cn {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff0000;
+            letter-spacing: 3px;
+            animation: blink 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .upload-btn {
+            background-color: #222;
+            color: #8b0000;
+            border: 1px solid #8b0000;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background-color: #8b0000;
+            color: #fff;
+        }
+        
+        /* 搜索栏 */
+        .search-bar {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: #ddd;
+            font-size: 1rem;
+        }
+        
+        .search-btn {
+            background-color: #222;
+            color: #8b0000;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .search-btn:hover {
+            background-color: #8b0000;
+            color: #fff;
+        }
+        
+        /* 分类导航 */
+        .category-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .cat-btn {
+            padding: 12px 25px;
+            background-color: #111;
+            border: 1px solid #333;
+            color: #aaa;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cat-btn:hover {
+            border-color: #8b0000;
+            color: #8b0000;
+        }
+        
+        .cat-btn.active {
+            background-color: #1a0000;
+            border-color: #8b0000;
+            color: #ff0000;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+        }
+        
+        .cat-btn.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            animation: shine 2s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* 商品网格 */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .item-card {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .item-card:hover {
+            transform: translateY(-5px);
+            border-color: #8b0000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+        }
+        
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b0000, #ff0000, #8b0000);
+        }
+        
+        .item-img {
+            width: 100%;
+            height: 180px;
+            background-color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .item-img::after {
+            content: 'CLASSIFIED';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            color: rgba(139, 0, 0, 0.1);
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+        
+        .item-content {
+            padding: 20px;
+        }
+        
+        .item-id {
+            color: #8b0000;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .item-name {
+            font-size: 1.3rem;
+            color: #eee;
+            margin-bottom: 10px;
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        .item-price {
+            color: #ff0000;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #222;
+            padding-top: 15px;
+        }
+        
+        .item-seller {
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .view-btn {
+            background-color: #1a0000;
+            color: #8b0000;
+            border: 1px solid #8b0000;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .view-btn:hover {
+            background-color: #8b0000;
+            color: #fff;
+        }
+        
+        /* 上传区域 */
+        .upload-section {
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .upload-title {
+            color: #8b0000;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .upload-instructions {
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #aaa;
+        }
+        
+        .contact-info {
+            background-color: #111;
+            border: 1px solid #8b0000;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        
+        .contact-title {
+            color: #ff0000;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .contact-detail {
+            color: #ddd;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+        }
+        
+        .footer-warning {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            padding: 15px;
+            background-color: rgba(139, 0, 0, 0.1);
+            border: 1px solid #333;
+            border-radius: 3px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            
+            .site-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .title-cn {
+                font-size: 2rem;
+            }
+            
+            .title-en {
+                font-size: 1.5rem;
+            }
+            
+            .warning-box {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-nav {
+                justify-content: center;
+            }
+            
+            .cat-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .title-cn {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 警告页面 -->
+    <div id="warningOverlay">
+        <div class="warning-box">
+            <i class="fas fa-skull-crossbones warning-icon"></i>
+            <h1 class="warning-title">警告</h1>
+            <p class="warning-text">
+                此网站为班级内部秘密交易平台，包含敏感信息。<br>
+                绝对不要将此网站告诉给老师或任何班级外人员。<br>
+                违反此警告可能导致平台关闭，后果自负。
+            </p>
+            <p class="warning-text">
+                进入此网站即表示您同意遵守班级内部规定，<br>
+                并对自己的行为承担全部责任。
+            </p>
+            <button class="warning-btn" id="enterBtn">我明白风险，进入网站</button>
+        </div>
+    </div>
+
+    <!-- 主页面内容 -->
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- 网站头部 -->
+        <header class="site-header">
+            <div class="logo-area">
+                <i class="fas fa-skull skull-icon"></i>
+                <div class="site-title">
+                    <div class="title-en">The Fifth Period</div>
+                    <div class="title-cn">第五节课</div>
+                </div>
+            </div>
+            <div class="user-area">
+                <button class="upload-btn" id="showUploadBtn">
+                    <i class="fas fa-upload"></i> 上传商品
+                </button>
+            </div>
+        </header>
+        
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索商品...">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <button class="cat-btn active" data-category="all">全部商品</button>
+            <button class="cat-btn" data-category="snacks">零食</button>
+            <button class="cat-btn" data-category="candy">糖果</button>
+            <button class="cat-btn" data-category="noodles">泡面</button>
+            <button class="cat-btn" data-category="gum">口香糖</button>
+            <button class="cat-btn" data-category="other">其他</button>
+        </div>
+        
+        <!-- 商品网格 -->
+        <div class="items-grid" id="itemsGrid">
+            <!-- 商品会通过JavaScript动态加载 -->
+        </div>
+        
+        <!-- 上传区域 -->
+        <div class="upload-section" id="uploadSection" style="display: none;">
+            <h2 class="upload-title"><i class="fas fa-exclamation-circle"></i> 如何上传商品</h2>
+            <p class="upload-instructions">
+                1. 首先，通过以下联系方式联系管理员，提供您的班级、姓名和想要出售的商品信息。<br>
+                2. 管理员审核通过后，会为您分配一个商品编号和专属详情页。<br>
+                3. 您需要在商品详情页中添加您的联系方式，以便买家与您联系。<br>
+                4. 交易完全由买卖双方自行协商，平台不参与交易过程。
+            </p>
+            
+            <div class="contact-info">
+                <h3 class="contact-title">管理员联系方式</h3>
+                <p class="contact-detail">邮箱：3627742771@qq.com</p>
+                <p class="contact-detail">添加好友时请备注："第五节课-商品上传"</p>
+            </div>
+            
+            <button class="upload-btn" id="hideUploadBtn" style="margin-top: 20px;">
+                <i class="fas fa-times"></i> 关闭上传说明
+            </button>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer>
+            <div class="footer-warning">
+                <i class="fas fa-exclamation-triangle"></i> 重要提示：本平台仅为班级内部交流使用，所有交易行为由买卖双方自行负责。请勿向班级外人员透露此网站存在。
+            </div>
+            <div>班级秘密交易平台 &copy; 2026 第五节课 (The Fifth Period)</div>
+        </footer>
+    </div>
+
+    <script>
+        // 商品数据
+        //seller写称号不写真名
+        const itemsData = {
+            gum: [
+                { id: 1, name: "test,xx口香糖-草莓味", description: "持久清新，草莓口味，保持口气清新", price: "15", seller: "管", stock: 10 },
+            ],
+            snacks: [
+                { id: 2, name: "test,xx辣条组合包", description: "经典童年味道，三种辣度可选，刺激味蕾", price: "12", seller: "管", stock: 20 }
+            ],
+            candy: [
+                { id: 3, name: "test,水果硬糖-混合口味", description: "多种水果口味，持久香甜，回味无穷", price: "5", seller: "管", stock: 25 }
+            ],
+            noodles: [
+                { id: 4, name: "test酸菜牛肉面-酸爽", description: "酸爽开胃，汤底浓郁，独特风味", price: "6", seller: "管", stock: 12 }
+            ],
+            other: [
+                { id: 5, name: "test能量饮料", description: "补充能量，提神醒脑，考试必备", price: "8", seller: "管", stock: 10 }
+            ]
+        };
+
+        // DOM元素
+        const warningOverlay = document.getElementById('warningOverlay');
+        const enterBtn = document.getElementById('enterBtn');
+        const mainContent = document.getElementById('mainContent');
+        const itemsGrid = document.getElementById('itemsGrid');
+        const catBtns = document.querySelectorAll('.cat-btn');
+        const showUploadBtn = document.getElementById('showUploadBtn');
+        const hideUploadBtn = document.getElementById('hideUploadBtn');
+        const uploadSection = document.getElementById('uploadSection');
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        // 进入网站
+        enterBtn.addEventListener('click', function() {
+            warningOverlay.style.opacity = '0';
+            setTimeout(() => {
+                warningOverlay.style.display = 'none';
+                mainContent.style.display = 'block';
+            }, 500);
+            
+            // 渲染商品
+            renderItems('all');
+        });
+        
+        // 渲染商品
+        function renderItems(category) {
+            itemsGrid.innerHTML = '';
+            
+            let itemsToRender = [];
+            
+            if (category === 'all') {
+                // 显示所有商品
+                for (const cat in itemsData) {
+                    itemsToRender = itemsToRender.concat(itemsData[cat]);
+                }
+            } else {
+                // 显示特定分类商品
+                itemsToRender = itemsData[category] || [];
+            }
+            
+            // 创建商品卡片
+            itemsToRender.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                
+                // 商品编号
+                const itemIdStr = item.id.toString().padStart(3, '0');
+                
+                // 图标根据分类选择
+                let icon = 'fa-box';
+                if (category === 'gum' || item.category === 'gum') icon = 'fa-candy-cane';
+                else if (category === 'snacks' || item.category === 'snacks') icon = 'fa-cookie-bite';
+                else if (category === 'candy' || item.category === 'candy') icon = 'fa-lollipop';
+                else if (category === 'noodles' || item.category === 'noodles') icon = 'fa-utensils';
+                else icon = 'fa-gift';
+                
+                itemCard.innerHTML = `
+                    <div class="item-img">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-id">编号：${itemIdStr}</div>
+                        <h3 class="item-name">${item.name}</h3>
+                        <div class="item-price">¥${item.price}</div>
+                        <div class="item-footer">
+                            <div class="item-seller">卖家：${item.seller}</div>
+                            <a href="${item.id}.html" class="view-btn">查看详情</a>
+                        </div>
+                    </div>
+                `;
+                
+                itemsGrid.appendChild(itemCard);
+            });
+            
+            // 如果没有商品
+            if (itemsToRender.length === 0) {
+                itemsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #666;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>此分类暂无商品</h3>
+                        <p>想要出售商品？点击右上角"上传商品"按钮查看说明</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 分类按钮事件
+        catBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // 更新活动按钮
+                catBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 渲染对应分类的商品
+                renderItems(category);
+            });
+        });
+        
+        // 显示上传说明
+        showUploadBtn.addEventListener('click', function() {
+            uploadSection.style.display = 'block';
+            uploadSection.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // 隐藏上传说明
+        hideUploadBtn.addEventListener('click', function() {
+            uploadSection.style.display = 'none';
+        });
+        
+        // 搜索功能
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.toLowerCase().trim();
+            if (!query) return;
+            
+            // 在所有商品中搜索
+            let allItems = [];
+            for (const cat in itemsData) {
+                allItems = allItems.concat(itemsData[cat]);
+            }
+            
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(query) || 
+                item.description.toLowerCase().includes(query) ||
+                item.seller.toLowerCase().includes(query)
+            );
+            
+            // 显示搜索结果
+            displaySearchResults(filteredItems);
+        }
+        
+        function displaySearchResults(items) {
+            itemsGrid.innerHTML = '';
+            
+            if (items.length === 0) {
+                itemsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #666;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>未找到相关商品</h3>
+                        <p>请尝试其他搜索关键词</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                
+                // 商品编号
+                const itemIdStr = item.id.toString().padStart(3, '0');
+                
+                itemCard.innerHTML = `
+                    <div class="item-img">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-id">编号：${itemIdStr}</div>
+                        <h3 class="item-name">${item.name}</h3>
+                        <div class="item-price">¥${item.price}</div>
+                        <div class="item-footer">
+                            <div class="item-seller">卖家：${item.seller}</div>
+                            <a href="${item.id}.html" class="view-btn">查看详情</a>
+                        </div>
+                    </div>
+                `;
+                
+                itemsGrid.appendChild(itemCard);
+            });
+        }
+    </script>
+</body>
+</html>

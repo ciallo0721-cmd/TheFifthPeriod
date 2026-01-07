@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xx口香糖-薄荷味 | 第五节课</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #050505;
+            color: #ddd;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 返回按钮 */
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #8b0000;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            color: #ff0000;
+        }
+        
+        /* 商品详情 */
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .product-images {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-images::after {
+            content: 'CLASSIFIED';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            color: rgba(139, 0, 0, 0.1);
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+        }
+        
+        .product-image {
+            font-size: 8rem;
+            color: #8b0000;
+            z-index: 1;
+        }
+        
+        .product-info {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .product-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8b0000, #ff0000, #8b0000);
+        }
+        
+        .product-id {
+            color: #8b0000;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .product-name {
+            font-size: 2.2rem;
+            color: #eee;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .product-price {
+            color: #ff0000;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .meta-value {
+            color: #ddd;
+            font-size: 1.2rem;
+        }
+        
+        .product-description {
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+        
+        /* 卖家信息 */
+        .seller-info {
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .seller-title {
+            color: #8b0000;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .contact-box {
+            background-color: #111;
+            border: 1px solid #8b0000;
+            padding: 20px;
+            border-radius: 3px;
+            margin-top: 15px;
+        }
+        
+        .contact-title {
+            color: #ff0000;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .contact-detail {
+            color: #ddd;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+        
+        .contact-note {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* 交易说明 */
+        .transaction-info {
+            background-color: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 25px;
+        }
+        
+        .transaction-title {
+            color: #8b0000;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .transaction-steps {
+            list-style-type: none;
+            counter-reset: step-counter;
+        }
+        
+        .transaction-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .transaction-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #8b0000;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+        }
+        
+        .footer-warning {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            padding: 15px;
+            background-color: rgba(139, 0, 0, 0.1);
+            border: 1px solid #333;
+            border-radius: 3px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 返回按钮 -->
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> 返回商品列表
+        </a>
+        
+        <!-- 商品详情 -->
+        <div class="product-detail">
+            <div class="product-images">
+                <i class="fas fa-candy-cane product-image"></i>
+            </div>
+            <div class="product-info">
+                <div class="product-id">商品编号：002</div>
+                <h1 class="product-name">炫迈口香糖-薄荷味</h1>
+                <div class="product-price">¥15</div>
+                
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">库存</div>
+                        <div class="meta-value">8件</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">卖家</div>
+                        <div class="meta-value">管哥</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">分类</div>
+                        <div class="meta-value">口香糖</div>
+                    </div>
+                </div>
+                
+                <div class="product-description">
+                    强劲薄荷，提神醒脑，持久清新。适合上课困倦时使用，快速恢复清醒状态。每盒包含12片独立包装，方便分享。
+                </div>
+            </div>
+        </div>
+        
+        <!-- 卖家信息 -->
+        <div class="seller-info">
+            <h2 class="seller-title"><i class="fas fa-user-secret"></i> 卖家联系方式</h2>
+            <p>购买此商品前，请先联系卖家确认库存和交易细节：</p>
+            
+            <div class="contact-box">
+                <h3 class="contact-title">卖家：管哥</h3>
+                <p class="contact-detail">QQ：987654321</p>
+                <p class="contact-detail">微信：lisi456</p>
+                <p class="contact-note">联系时请注明："第五节课-商品编号002"</p>
+            </div>
+        </div>
+        
+        <!-- 交易说明 -->
+        <div class="transaction-info">
+            <h2 class="transaction-title"><i class="fas fa-exchange-alt"></i> 交易流程说明</h2>
+            <ol class="transaction-steps">
+                <li>通过上方联系方式与卖家取得联系，确认商品库存和价格</li>
+                <li>与卖家协商交易时间和地点（建议选择课间或放学后）</li>
+                <li>见面交易，检查商品无误后付款</li>
+                <li>交易完成后，请勿向班级外人员透露交易细节</li>
+                <li>如有问题，可联系平台管理员协调解决</li>
+            </ol>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer>
+            <div class="footer-warning">
+                <i class="fas fa-exclamation-triangle"></i> 重要提示：本平台仅为班级内部交流使用，所有交易行为由买卖双方自行负责。平台不参与实际交易，也不对交易纠纷承担责任。
+            </div>
+            <div>班级秘密交易平台 &copy; 2026 第五节课 (The Fifth Period)</div>
+        </footer>
+    </div>
+</body>
+</html>
